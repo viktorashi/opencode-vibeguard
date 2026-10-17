@@ -62,7 +62,10 @@ function withConfig(config, run) {
 test("V2: setup is a no-op when no config is found", async () => {
   const dir = mkdtempSync(join(tmpdir(), "vibeguard-empty-"))
   const prev = process.env.OPENCODE_VIBEGUARD_CONFIG
+  const prevHome = process.env.HOME
   delete process.env.OPENCODE_VIBEGUARD_CONFIG
+  // Keep a developer's global VibeGuard config from changing this test's result.
+  process.env.HOME = dir
   try {
     const { ctx, hooks } = makeFakeContext(dir)
     const cleanup = await vibeguardSetup(ctx)
@@ -70,6 +73,8 @@ test("V2: setup is a no-op when no config is found", async () => {
     assert.deepEqual(Object.keys(hooks), [])
   } finally {
     if (prev !== undefined) process.env.OPENCODE_VIBEGUARD_CONFIG = prev
+    if (prevHome === undefined) delete process.env.HOME
+    else process.env.HOME = prevHome
     rmSync(dir, { recursive: true, force: true })
   }
 })
