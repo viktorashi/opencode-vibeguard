@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "prepack": "npm test"
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "opencode",
